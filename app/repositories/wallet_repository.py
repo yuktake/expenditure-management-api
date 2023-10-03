@@ -133,7 +133,7 @@ class WalletRepository(AbstractWalletRepository):
         await session.flush()
         return history_.to_entity()
 
-    async def delete_history(self, session: ass, wallet_id: int, history: History):
+    async def delete_history(self, session: ass, wallet_id: int, history: History) -> None:
         stmt = select(HistoryORM).where(
             HistoryORM.wallet_id == wallet_id,
             HistoryORM.history_id == history.history_id,
