@@ -9,14 +9,8 @@ from sqlalchemy.ext.asyncio import (
 )
 from exceptions import AppException
 from repositories.wallet import BaseORM
-from repositories.wallet_repository import WalletRepository as _WalletRepository
-from db.abstract_database import AbstractDatabase
         
 logger = logging.getLogger(__name__)
-
-WalletRepository = Annotated[
-    _WalletRepository, Depends(_WalletRepository)
-]
 
 async_engine = create_async_engine(
     "sqlite+aiosqlite:///database.db",
@@ -33,9 +27,9 @@ async def get_session() -> AsyncIterator[async_sessionmaker]:
         logger.exception(e)
         raise AppException() from e
 
-AsyncSession = Annotated[
-    async_sessionmaker, Depends(get_session)
-]
+# AsyncSession = Annotated[
+#     async_sessionmaker, Depends(get_session)
+# ]
 
 async def create_database_if_not_exist() -> None:
     def create_tables_if_not_exist(sync_conn: Connection,) -> None:
