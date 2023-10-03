@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession as ass
+from dependencies.database import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
 from exceptions import AppException
 from models import History, Wallet, HistoryType
@@ -14,19 +15,17 @@ from .wallet import (
     HistoryORM,
 )
 
-class WalletRepository(AbstractWalletRepository):
-    # def __init__(self, session) -> None:
-    #     self.aaa = session
-    #     print("sessionnnnnnnnnnnnn")
-    #     print(self.aaa)
+from dependencies.session import SessionInterface
 
-    async def add(self, session: AsyncSession, name: str) -> Wallet:
+class WalletRepository(AbstractWalletRepository):
+
+    async def add(self, session: ass, name: str) -> Wallet:
         wallet = WalletORM(name=name, histories=[])
         session.add(wallet)
         await session.flush()
         return wallet.to_entity()
 
-    async def get_by_id(self,session: AsyncSession,wallet_id: int,) -> Wallet | None:
+    async def get_by_id(self, session: ass, wallet_id: int,) -> Wallet | None:
         stmt = (
             select(WalletORM)
             .where(WalletORM.wallet_id == wallet_id)
@@ -39,12 +38,11 @@ class WalletRepository(AbstractWalletRepository):
             return None
         return wallet.to_entity()
 
-    async def get_all(
-        self, session: AsyncSession
-    ) -> list[Wallet]:
+    async def get_all(self, session: ass) -> list[Wallet]:
         stmt = select(WalletORM).options(
             selectinload(WalletORM.histories)
         )
+        
         return [
             wallet.to_entity()
             for wallet in await session.scalars(
@@ -52,9 +50,48 @@ class WalletRepository(AbstractWalletRepository):
             )
         ]
 
+    async def update(self, session: ass, wallet: Wallet) -> Wallet:
+        stmt = (
+            select(WalletORM)
+            .where(WalletORM.wallet_id == wallet.wallet_id)
+            .options(selectinload(WalletORM.histories))
+        )
+        wallet_ = await session.scalar(stmt)
+        if not wallet_:
+            raise AppException()
+
+        wallet_.update(wallet, wallet_.histories)
+        await session.flush()
+        return wallet_.to_entity()
+
+    async def delete(self, session: ass, wallet: Wallet) -> None:
+        stmt = select(WalletORM).where(WalletORM.wallet_id == wallet.wallet_id)
+        wallet_ = await session.scalar(stmt)
+        if wallet_:
+            await session.delete(wallet_)
+
+    async def get_history_by_id(
+        self,
+        session: ass,
+        wallet_id: int,
+        history_id: int,
+    ) -> History | None:
+        stmt = (
+            select(HistoryORM)
+            .where(
+                HistoryORM.wallet_id == wallet_id, HistoryORM.history_id == history_id
+            )
+            .options(joinedload(HistoryORM.wallet))
+        )
+        history_ = await session.scalar(stmt)
+        if not history_:
+            return None
+
+        return history_.to_entity()
+
     async def add_history(
         self,
-        session: AsyncSession,
+        session: ass,
         wallet_id: int,
         name: str,
         amount: int,
@@ -83,46 +120,7 @@ class WalletRepository(AbstractWalletRepository):
         await session.flush()
         return history.to_entity()
 
-    async def update(self, session: AsyncSession, wallet: Wallet) -> Wallet:
-        stmt = (
-            select(WalletORM)
-            .where(WalletORM.wallet_id == wallet.wallet_id)
-            .options(selectinload(WalletORM.histories))
-        )
-        wallet_ = await session.scalar(stmt)
-        if not wallet_:
-            raise AppException()
-
-        wallet_.update(wallet, wallet_.histories)
-        await session.flush()
-        return wallet_.to_entity()
-
-    async def delete(self, session: AsyncSession, wallet: Wallet) -> None:
-        stmt = select(WalletORM).where(WalletORM.wallet_id == wallet.wallet_id)
-        wallet_ = await session.scalar(stmt)
-        if wallet_:
-            await session.delete(wallet_)
-
-    async def get_history_by_id(
-        self,
-        session: AsyncSession,
-        wallet_id: int,
-        history_id: int,
-    ) -> History | None:
-        stmt = (
-            select(HistoryORM)
-            .where(
-                HistoryORM.wallet_id == wallet_id, HistoryORM.history_id == history_id
-            )
-            .options(joinedload(HistoryORM.wallet))
-        )
-        history_ = await session.scalar(stmt)
-        if not history_:
-            return None
-
-        return history_.to_entity()
-
-    async def update_history(self, session: AsyncSession, wallet_id: int, history: History) -> History:
+    async def update_history(self, session: ass, wallet_id: int, history: History) -> History:
         stmt = select(HistoryORM).where(
             HistoryORM.wallet_id == wallet_id,
             HistoryORM.history_id == history.history_id,
@@ -135,7 +133,7 @@ class WalletRepository(AbstractWalletRepository):
         await session.flush()
         return history_.to_entity()
 
-    async def delete_history(self, session: AsyncSession, wallet_id: int, history: History):
+    async def delete_history(self, session: ass, wallet_id: int, history: History):
         stmt = select(HistoryORM).where(
             HistoryORM.wallet_id == wallet_id,
             HistoryORM.history_id == history.history_id,
