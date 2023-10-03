@@ -34,12 +34,10 @@ async def get_wallets(
     use_case: Annotated[
         ListWallets, Depends(ListWallets)
     ],
-    # use_case: ListWallets = Depends(Provide[Container.listWalletProvider]),
 ) -> GetWalletsResponse:
     """Walletの一覧取得API"""
     return GetWalletsResponse(
-        wallets=[Wallet.model_validate(w)
-            for w in await use_case.execute()]
+        wallets=[Wallet.model_validate(w) for w in await use_case.execute()]
     )
 
 @router.get(
