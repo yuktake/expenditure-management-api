@@ -31,7 +31,7 @@ class TestWalletRepository(AbstractWalletRepository):
         return [
             Wallet(wallet_id=999, name="testing", histories=[]),
             Wallet(wallet_id=1000, name="testing2", histories=[])
-            ]
+        ]
 
     async def update(self, session: ass, wallet: Wallet) -> Wallet:
         return Wallet(wallet_id=999, name="testing", histories=[])

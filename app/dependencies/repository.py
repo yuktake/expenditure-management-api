@@ -13,7 +13,6 @@ if settings.status == "testing":
         AbstractWalletRepository, Depends(TestWalletRepository)
     ]
 else:
-    print("WalletRepositoryyyyyyyyyyy")
     WalletRepositoryInterface = Annotated[
         AbstractWalletRepository, Depends(WalletRepository)
     ]

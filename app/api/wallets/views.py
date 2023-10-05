@@ -1,5 +1,3 @@
-from dependency_injector.wiring import Provide, inject
-# from containers import Container
 from config import Settings
 from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status

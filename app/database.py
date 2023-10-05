@@ -27,10 +27,6 @@ async def get_session() -> AsyncIterator[async_sessionmaker]:
         logger.exception(e)
         raise AppException() from e
 
-# AsyncSession = Annotated[
-#     async_sessionmaker, Depends(get_session)
-# ]
-
 async def create_database_if_not_exist() -> None:
     def create_tables_if_not_exist(sync_conn: Connection,) -> None:
         if not inspect(sync_conn.engine).has_table("wallets"):
