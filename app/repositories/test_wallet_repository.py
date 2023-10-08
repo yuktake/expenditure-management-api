@@ -21,11 +21,24 @@ from datetime import datetime
 
 class TestWalletRepository(AbstractWalletRepository):
 
-    async def add(self, session: ass, name: str) -> Wallet:
+    async def add(self, session: ass, wallet: Wallet) -> Wallet:
         return Wallet(wallet_id=999, name="testing", histories=[])
 
     async def get_by_id(self, session: ass, wallet_id: int,) -> Wallet | None:
-        return Wallet(wallet_id=999, name="testing", histories=[])
+        return Wallet(
+            wallet_id=999, 
+            name="testing", 
+            histories=[
+                History(
+                    history_id=999,
+                    name="test_history",
+                    amount=100,
+                    type=HistoryType.INCOME,
+                    history_at=datetime(2021, 12, 24, 3, 30, 20),
+                    wallet_id=999,
+                )
+            ]
+        )
 
     async def get_all(self, session: ass) -> list[Wallet]:
         return [
@@ -34,7 +47,7 @@ class TestWalletRepository(AbstractWalletRepository):
         ]
 
     async def update(self, session: ass, wallet: Wallet) -> Wallet:
-        return Wallet(wallet_id=999, name="testing", histories=[])
+        return Wallet(wallet_id=wallet.wallet_id, name=wallet.name, histories=wallet.histories)
 
     async def delete(self, session: ass, wallet: Wallet) -> None:
         return None
@@ -46,40 +59,36 @@ class TestWalletRepository(AbstractWalletRepository):
         history_id: int,
     ) -> History | None:
         return History(
-            history_id=1,
-            name="history_get_test",
-            amount=999,
+            history_id=999,
+            name="test_history",
+            amount=100,
             type=HistoryType.INCOME,
             history_at=datetime(2021, 12, 24, 3, 30, 20),
-            wallet_id=1
+            wallet_id=999,
         )
 
     async def add_history(
         self,
         session: ass,
-        wallet_id: int,
-        name: str,
-        amount: int,
-        type_: HistoryType,
-        history_at: datetime,
+        history: History
     ) -> History:
         return History(
             history_id=1,
-            name="history_add_test",
+            wallet_id=history.wallet_id,
+            name=history.name,
             amount=999,
-            type=HistoryType.INCOME,
-            history_at=datetime(2021, 12, 24, 3, 30, 20),
-            wallet_id=1
+            type=history.type,
+            history_at=history.history_at,
         )
 
     async def update_history(self, session: ass, wallet_id: int, history: History) -> History:
         return History(
-            history_id=1,
-            name="history_update_test",
-            amount=999,
-            type=HistoryType.INCOME,
-            history_at=datetime(2021, 12, 24, 3, 30, 20),
-            wallet_id=1
+            history_id=history.history_id,
+            name=history.name,
+            amount=history.amount,
+            type=history.type,
+            history_at=history.history_at,
+            wallet_id=history.wallet_id,
         )
 
     async def delete_history(self, session: ass, wallet_id: int, history: History) -> None:
