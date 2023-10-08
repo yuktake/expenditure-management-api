@@ -6,7 +6,7 @@ from dependencies.session import SessionInterface
 from exceptions import NotFound
 from models import Wallet
 
-from typing import  AsyncIterator
+from typing import AsyncIterator
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 class ListWallets:

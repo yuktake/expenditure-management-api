@@ -63,9 +63,7 @@ class HistoryORM(BaseORM):
 
 class WalletORM(BaseORM):
     __tablename__ = "wallets"
-    wallet_id: Mapped[int] = mapped_column(
-        primary_key=True
-    )
+    wallet_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     histories: Mapped[
         list[HistoryORM]
