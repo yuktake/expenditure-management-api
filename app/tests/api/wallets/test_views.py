@@ -157,7 +157,6 @@ async def test_move_history(ac):
             "destination_id": 2,
         }
     )
-    # assert response.status_code == 200
     assert response.json() == {
         "history_id": 999,
         "name": "test_history",
