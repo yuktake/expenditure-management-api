@@ -64,21 +64,25 @@ class CreateHistory:
         type_: HistoryType,
         history_at: datetime,
     ) -> History:
+        history = History(
+            history_id = None,
+            wallet_id = wallet_id,
+            name = name,
+            amount = amount,
+            type = type_,
+            history_at = history_at
+        )
         sess = self.session.get_session()
         async with sess.begin() as s:
-            wallet = await self.repo.get_by_id(s, wallet_id)
+            wallet = await self.repo.get_by_id(s, history.wallet_id)
             if not wallet:
-                raise NotFound("wallet", wallet_id)
+                raise NotFound("wallet", history.wallet_id)
 
-            history = await self.repo.add_history(
+            created_history = await self.repo.add_history(
                 s,
-                wallet.wallet_id,
-                name=name,
-                amount=amount,
-                type_=type_,
-                history_at=history_at,
+                history
             )
-        return history
+        return created_history
 
 class UpdateHistory:
     def __init__(
@@ -104,12 +108,16 @@ class UpdateHistory:
             if not history:
                 raise NotFound("history", history_id)
 
-            history.name = name
-            history.amount = amount
-            history.type = type_
-            history.history_at = history_at
-            await self.repo.update_history(s, wallet_id, history)
-        return history
+            update_history = History(
+                history_id = history_id,
+                wallet_id = wallet_id,
+                name = name,
+                amount = amount,
+                type = type_,
+                history_at = history_at
+            )
+            await self.repo.update_history(s, wallet_id, update_history)
+        return update_history
 
 class DeleteHistory:
     def __init__(
@@ -154,6 +162,13 @@ class MoveHistory:
             if not wallet:
                 raise NotFound("wallet", wallet_id)
 
-            history.wallet_id = wallet.wallet_id
-            await self.repo.update_history(s, wallet_id, history)
-        return history
+            move_history = History(
+                history_id = history.history_id,
+                wallet_id = wallet.wallet_id,
+                name = history.name,
+                amount = history.amount,
+                type = history.type,
+                history_at = history.history_at
+            )
+            await self.repo.update_history(s, wallet_id, move_history)
+        return move_history

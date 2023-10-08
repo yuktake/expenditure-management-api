@@ -54,11 +54,12 @@ class CreateWallet:
         self.repo = repo
 
     async def execute(self, name: str) -> Wallet:
+        wallet = Wallet(wallet_id=None, name=name, histories=[])
         sess = self.session.get_session()
         async with sess.begin() as s:
-            wallet = await self.repo.add(s, name=name)
+            created_wallet = await self.repo.add(s, wallet=wallet)
 
-        return wallet
+        return created_wallet
 
 class UpdateWallet:
     def __init__(
@@ -78,10 +79,14 @@ class UpdateWallet:
 
             if not wallet:
                 raise NotFound("wallet", wallet_id)
-            wallet.name = name
-            await self.repo.update(s, wallet)
+            update_wallet = Wallet(
+                wallet_id=wallet.wallet_id,
+                name=name,
+                histories=wallet.histories,
+            )
+            await self.repo.update(s, update_wallet)
 
-        return wallet
+        return update_wallet
 
 class DeleteWallet:
     def __init__(
