@@ -1,27 +1,25 @@
 from datetime import datetime
-from db.database import (
-    AsyncSession,
-    WalletRepository,
-)
+
+from dependencies.repository import WalletRepositoryInterface
+from dependencies.session import SessionInterface
+
+from dependencies.database import AsyncSession
 from exceptions import NotFound
 from models import History, HistoryType
 
 class ListHistories:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
 
-    async def execute(
-        self, wallet_id: int
-    ) -> list[History]:
-        async with self.session() as session:
-            wallet = await self.repo.get_by_id(
-                session, wallet_id
-            )
+    async def execute(self, wallet_id: int) -> list[History]:
+        sess = self.session.get_session()
+        async with sess() as s:
+            wallet = await self.repo.get_by_id(s, wallet_id)
             if not wallet:
                 raise NotFound("wallet", wallet_id)
 
@@ -30,8 +28,8 @@ class ListHistories:
 class GetHistory:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -41,10 +39,9 @@ class GetHistory:
         wallet_id: int,
         history_id: int,
     ) -> History:
-        async with self.session() as session:
-            history = await self.repo.get_history_by_id(
-                session, wallet_id, history_id
-            )
+        sess = self.session.get_session()
+        async with sess() as s:
+            history = await self.repo.get_history_by_id(s, wallet_id, history_id)
             if not history:
                 raise NotFound("history", history_id)
 
@@ -53,8 +50,8 @@ class GetHistory:
 class CreateHistory:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -67,26 +64,31 @@ class CreateHistory:
         type_: HistoryType,
         history_at: datetime,
     ) -> History:
-        async with self.session.begin() as session:
-            wallet = await self.repo.get_by_id(session, wallet_id)
+        history = History(
+            history_id = None,
+            wallet_id = wallet_id,
+            name = name,
+            amount = amount,
+            type = type_,
+            history_at = history_at
+        )
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            wallet = await self.repo.get_by_id(s, history.wallet_id)
             if not wallet:
-                raise NotFound("wallet", wallet_id)
+                raise NotFound("wallet", history.wallet_id)
 
-            history = await self.repo.add_history(
-                session,
-                wallet.wallet_id,
-                name=name,
-                amount=amount,
-                type_=type_,
-                history_at=history_at,
+            created_history = await self.repo.add_history(
+                s,
+                history
             )
-        return history
+        return created_history
 
 class UpdateHistory:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -100,23 +102,28 @@ class UpdateHistory:
         type_: HistoryType,
         history_at: datetime,
     ) -> History:
-        async with self.session.begin() as session:
-            history = await self.repo.get_history_by_id(session, wallet_id, history_id)
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            history = await self.repo.get_history_by_id(s, wallet_id, history_id)
             if not history:
                 raise NotFound("history", history_id)
 
-            history.name = name
-            history.amount = amount
-            history.type = type_
-            history.history_at = history_at
-            await self.repo.update_history(session, wallet_id, history)
-        return history
+            update_history = History(
+                history_id = history_id,
+                wallet_id = wallet_id,
+                name = name,
+                amount = amount,
+                type = type_,
+                history_at = history_at
+            )
+            await self.repo.update_history(s, wallet_id, update_history)
+        return update_history
 
 class DeleteHistory:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -124,16 +131,17 @@ class DeleteHistory:
     async def execute(
         self, wallet_id: int, history_id: int
     ) -> None:
-        async with self.session.begin() as session:
-            history = await self.repo.get_history_by_id(session, wallet_id, history_id)
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            history = await self.repo.get_history_by_id(s, wallet_id, history_id)
             if history:
-                await self.repo.delete_history(session, history.wallet_id, history)
+                await self.repo.delete_history(s, history.wallet_id, history)
 
 class MoveHistory:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -144,15 +152,23 @@ class MoveHistory:
         history_id: int,
         destination_id: int
     ) -> History:
-        async with self.session.begin() as session:
-            history = await self.repo.get_history_by_id(session, wallet_id, history_id)
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            history = await self.repo.get_history_by_id(s, wallet_id, history_id)
             if not history:
                 raise NotFound("history", history_id)
 
-            wallet = await self.repo.get_by_id(session, destination_id)
+            wallet = await self.repo.get_by_id(s, destination_id)
             if not wallet:
                 raise NotFound("wallet", wallet_id)
 
-            history.wallet_id = wallet.wallet_id
-            await self.repo.update_history(session, wallet_id, history)
-        return history
+            move_history = History(
+                history_id = history.history_id,
+                wallet_id = wallet.wallet_id,
+                name = history.name,
+                amount = history.amount,
+                type = history.type,
+                history_at = history.history_at
+            )
+            await self.repo.update_history(s, wallet_id, move_history)
+        return move_history

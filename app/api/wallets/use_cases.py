@@ -1,42 +1,35 @@
-from db.database import (
-    AsyncSession,
-)
-from db.database import WalletRepository
+from dependencies.database import AsyncSession
+from dependencies.repository import WalletRepositoryInterface
+from dependencies.session import SessionInterface
+
+
 from exceptions import NotFound
 from models import Wallet
 
-from typing import  AsyncIterator
+from typing import AsyncIterator
 from sqlalchemy.ext.asyncio import async_sessionmaker
-
-# class Test:
-#     def __init__(self, config) -> None:
-#         print("ccccccccccccccccccccccccccc")
-#         # print(config.app_name)
-#         print(config.aaa)
 
 class ListWallets:
 
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
 
     async def execute(self) -> list[Wallet]:
-        async with self.session() as session:
-            wallets = await self.repo.get_all(
-                session
-            )
+        sess = self.session.get_session()
+        async with sess() as s:
+            wallets = await self.repo.get_all(s)
         return wallets
-        # return self.repo.get_all()
 
 class GetWallet:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -44,10 +37,9 @@ class GetWallet:
     async def execute(
         self, wallet_id: int,
     ) -> Wallet:
-        async with self.session() as session:
-            wallet = await self.repo.get_by_id(
-                session, wallet_id
-            )
+        sess = self.session.get_session()
+        async with sess() as s:
+            wallet = await self.repo.get_by_id(s, wallet_id)
             if not wallet:
                 raise NotFound("wallet", wallet_id)
         return wallet
@@ -55,23 +47,25 @@ class GetWallet:
 class CreateWallet:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
 
     async def execute(self, name: str) -> Wallet:
-        async with self.session.begin() as session:
-            wallet = await self.repo.add(session, name=name)
+        wallet = Wallet(wallet_id=None, name=name, histories=[])
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            created_wallet = await self.repo.add(s, wallet=wallet)
 
-        return wallet
+        return created_wallet
 
 class UpdateWallet:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -79,21 +73,26 @@ class UpdateWallet:
     async def execute(
         self, wallet_id: int, name: str
     ) -> Wallet:
-        async with self.session.begin() as session:
-            wallet = await self.repo.get_by_id(session, wallet_id)
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            wallet = await self.repo.get_by_id(s, wallet_id)
 
             if not wallet:
                 raise NotFound("wallet", wallet_id)
-            wallet.name = name
-            await self.repo.update(session, wallet)
+            update_wallet = Wallet(
+                wallet_id=wallet.wallet_id,
+                name=name,
+                histories=wallet.histories,
+            )
+            await self.repo.update(s, update_wallet)
 
-        return wallet
+        return update_wallet
 
 class DeleteWallet:
     def __init__(
         self,
-        session: AsyncSession,
-        repo: WalletRepository,
+        session: SessionInterface,
+        repo: WalletRepositoryInterface,
     ) -> None:
         self.session = session
         self.repo = repo
@@ -101,7 +100,8 @@ class DeleteWallet:
     async def execute(
         self, wallet_id: int
     ) -> None:
-        async with self.session.begin() as session:
-            wallet = await self.repo.get_by_id(session, wallet_id)
+        sess = self.session.get_session()
+        async with sess.begin() as s:
+            wallet = await self.repo.get_by_id(s, wallet_id)
             if wallet:
-                await self.repo.delete(session, wallet)
+                await self.repo.delete(s, wallet)
