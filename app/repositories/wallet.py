@@ -4,6 +4,7 @@ from sqlalchemy import (
     Enum,
     ForeignKey,
     Integer,
+    String,
 )
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -22,7 +23,7 @@ class HistoryORM(BaseORM):
     history_id: Mapped[int] = mapped_column(
         primary_key=True
     )
-    name: Mapped[str]
+    name: Mapped[str] = mapped_column(String(50))
     amount: Mapped[int] = mapped_column(
         Integer, CheckConstraint("amount > 0")
     )
@@ -64,7 +65,7 @@ class HistoryORM(BaseORM):
 class WalletORM(BaseORM):
     __tablename__ = "wallets"
     wallet_id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str]
+    name: Mapped[str] = mapped_column(String(50))
     histories: Mapped[
         list[HistoryORM]
     ] = relationship(

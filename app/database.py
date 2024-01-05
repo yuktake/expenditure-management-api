@@ -9,11 +9,13 @@ from sqlalchemy.ext.asyncio import (
 )
 from exceptions import AppException
 from repositories.wallet import BaseORM
+from config import Settings
         
 logger = logging.getLogger(__name__)
+settings = Settings()
 
 async_engine = create_async_engine(
-    "sqlite+aiosqlite:///database.db",
+    settings.db_url,
 )
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,
