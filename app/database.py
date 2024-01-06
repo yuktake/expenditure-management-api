@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from exceptions import AppException
-from repositories.wallet import BaseORM
+from models.alchemy.wallet import BaseORM
 from config import Settings
         
 logger = logging.getLogger(__name__)

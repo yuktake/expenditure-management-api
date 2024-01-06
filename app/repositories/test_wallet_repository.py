@@ -12,10 +12,8 @@ from .abstract_wallet_repository import AbstractWalletRepository
 
 from typing import AsyncIterator
 from sqlalchemy.ext.asyncio import async_sessionmaker
-from .wallet import (
-    WalletORM,
-    HistoryORM,
-)
+from models.alchemy.wallet import WalletORM
+from models.alchemy.history import HistoryORM
 
 from dependencies.session import SessionInterface
 

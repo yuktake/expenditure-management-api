@@ -1,3 +1,4 @@
+from .base import BaseORM
 from datetime import datetime
 from sqlalchemy import (
     CheckConstraint,
@@ -7,17 +8,11 @@ from sqlalchemy import (
     String,
 )
 from sqlalchemy.orm import (
-    DeclarativeBase,
     Mapped,
     mapped_column,
     relationship,
 )
 from models.pydantic.history import History, HistoryType
-from models.pydantic.wallet import Wallet
-
-
-class BaseORM(DeclarativeBase):
-    pass
 
 class HistoryORM(BaseORM):
     __tablename__ = "histories"
@@ -62,33 +57,3 @@ class HistoryORM(BaseORM):
         self.type = history.type
         self.wallet_id = history.wallet_id
         self.history_at = history.history_at
-
-class WalletORM(BaseORM):
-    __tablename__ = "wallets"
-    wallet_id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(50))
-    histories: Mapped[
-        list[HistoryORM]
-    ] = relationship(
-        back_populates="wallet",
-        order_by=HistoryORM.history_at.desc(),
-        cascade=(
-            "save-update, merge, expunge"
-            ", delete, delete-orphan"
-        ),
-    )
-
-    @classmethod
-    def from_entity(cls, wallet: Wallet):
-        return cls(
-            wallet_id=wallet.wallet_id,
-            name=wallet.name,
-            histories=wallet.histories,
-        )
-
-    def to_entity(self) -> Wallet:
-        return Wallet.model_validate(self)
-
-    def update(self, wallet: Wallet, histories: list[HistoryORM]) -> None:
-        self.name = wallet.name
-        self.histories = histories
