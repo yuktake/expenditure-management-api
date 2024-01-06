@@ -1,10 +1,7 @@
-from datetime import datetime
-from enum import StrEnum
-from typing import Annotated
-from pydantic import ConfigDict, PositiveInt, Field, validator, WrapSerializer, BaseModel as _BaseModel
-from utils.datetime import to_utc
-from typing import Any
-from dataclasses import dataclass
+from pydantic import (
+    ConfigDict,
+    BaseModel as _BaseModel
+)
 
 class BaseModel(_BaseModel):
     # 変数名を揃えることでORMインスタンスからPydanticインスタンスに変換できる？

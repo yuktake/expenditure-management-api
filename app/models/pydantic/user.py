@@ -1,12 +1,8 @@
-from datetime import datetime
-from enum import StrEnum
-from typing import Annotated
-from pydantic import ConfigDict, PositiveInt, Field, validator
-from pydantic import WrapSerializer
-from utils.datetime import to_utc
-from typing import Any
+from pydantic import Field
 from dataclasses import dataclass
+
 from dependencies.datetime import UTCDatetime
+from models.pydantic.base import BaseModel
 
 @dataclass(frozen=True)
 class User(BaseModel):
@@ -23,6 +19,7 @@ class UserDetail(BaseModel):
         super().__init__(**kwargs)
         self.model_validate(self)
 
+    id: int|None
     user_id: int
     firstName: str = Field(..., max_length=255)
     lastName: str = Field(..., max_length=255)

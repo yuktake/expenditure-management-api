@@ -1,4 +1,4 @@
-from .base import BaseORM
+from models.alchemy.base import BaseORM
 from sqlalchemy import String
 from sqlalchemy.orm import (
     Mapped,

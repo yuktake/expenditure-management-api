@@ -1,4 +1,4 @@
-from .base import BaseORM
+from models.alchemy.base import BaseORM
 from datetime import datetime
 from sqlalchemy import (
     CheckConstraint,

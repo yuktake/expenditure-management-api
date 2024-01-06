@@ -1,10 +1,4 @@
-from datetime import datetime
-from enum import StrEnum
-from typing import Annotated
-from pydantic import ConfigDict, PositiveInt, Field, validator
-from pydantic import WrapSerializer
-from utils.datetime import to_utc
-from typing import Any
+from pydantic import Field, validator
 from dataclasses import dataclass
 
 from models.pydantic.base import BaseModel
