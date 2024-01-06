@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
-from models import History, Wallet, HistoryType
+from models.history import History, HistoryType
+from models.wallet import Wallet
 
 class AbstractWalletRepository(ABC):
 

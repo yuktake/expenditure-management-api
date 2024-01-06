@@ -2,9 +2,8 @@ from dependencies.database import AsyncSession
 from dependencies.repository import WalletRepositoryInterface
 from dependencies.session import SessionInterface
 
-
 from exceptions import NotFound
-from models import Wallet
+from models.wallet import Wallet
 
 from typing import AsyncIterator
 from sqlalchemy.ext.asyncio import async_sessionmaker
