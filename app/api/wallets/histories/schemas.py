@@ -1,6 +1,7 @@
 from pydantic import Field, PositiveInt
 from models.base import BaseModel
 from models.history import HistoryType
+from dependencies.datetime import UTCDatetime
 
 class History(BaseModel):
     history_id: int

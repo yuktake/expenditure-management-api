@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession as ass
 from dependencies.database import AsyncSession
+from dependencies.datetime import UTCDatetime
 from sqlalchemy.orm import selectinload, joinedload
 from exceptions import AppException
 from models.history import History, HistoryType
