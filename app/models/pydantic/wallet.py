@@ -7,8 +7,8 @@ from utils.datetime import to_utc
 from typing import Any
 from dataclasses import dataclass
 
-from models.base import BaseModel
-from models.history import History
+from models.pydantic.base import BaseModel
+from models.pydantic.history import History
 
 @dataclass(frozen=True)
 class Wallet(BaseModel):

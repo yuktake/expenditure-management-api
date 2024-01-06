@@ -1,5 +1,5 @@
 from pydantic import Field
-from models.base import BaseModel
+from models.pydantic.base import BaseModel
 from .histories.schemas import History
 
 class Wallet(BaseModel):

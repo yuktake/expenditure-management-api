@@ -5,7 +5,7 @@ from dependencies.session import SessionInterface
 
 from dependencies.database import AsyncSession
 from exceptions import NotFound
-from models.history import History, HistoryType
+from models.pydantic.history import History, HistoryType
 
 class ListHistories:
     def __init__(

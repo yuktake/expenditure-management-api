@@ -12,8 +12,8 @@ from sqlalchemy.orm import (
     mapped_column,
     relationship,
 )
-from models.history import History, HistoryType
-from models.wallet import Wallet
+from models.pydantic.history import History, HistoryType
+from models.pydantic.wallet import Wallet
 
 
 class BaseORM(DeclarativeBase):

@@ -8,7 +8,7 @@ from typing import Any
 from dataclasses import dataclass
 
 from dependencies.datetime import UTCDatetime
-from models.base import BaseModel
+from models.pydantic.base import BaseModel
 
 class HistoryType(StrEnum):
     INCOME = "INCOME"
