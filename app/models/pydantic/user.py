@@ -19,10 +19,9 @@ class UserDetail(BaseModel):
         super().__init__(**kwargs)
         self.model_validate(self)
 
-    id: int|None
     user_id: int
-    firstName: str = Field(..., max_length=255)
-    lastName: str = Field(..., max_length=255)
+    first_name: str = Field(..., max_length=255)
+    last_name: str = Field(..., max_length=255)
 
 @dataclass(frozen=True)
 class UserEmail(BaseModel):
@@ -61,7 +60,7 @@ class UserPhoneNumber(BaseModel):
         self.model_validate(self)
 
     user_id: int
-    phoneNumber: str = Field(..., min_length=11, max_length=11)
+    phone_number: str = Field(..., min_length=11, max_length=11)
 
 @dataclass(frozen=True)
 class UserActive(BaseModel):
