@@ -2,6 +2,15 @@ from pydantic import Field
 from models.pydantic.base import BaseModel
 from dependencies.datetime import UTCDatetime
 
-class User(BaseModel):
-    user_id: int
-    created_at: UTCDatetime = Field(..., description="登録日時（UTC）")
+from models.pydantic.base import BaseModel
+from models.pydantic.user import User
+
+class CreateUserRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    password: str
+    phone_number: str
+
+class CreateUserResponse(User):
+    pass

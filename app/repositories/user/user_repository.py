@@ -4,13 +4,16 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession as ass
 
 from models.pydantic.user import User
+from api.users.schemas import CreateUserRequest
 from .abstract_user_repository import AbstractUserRepository
 from models.alchemy.user.user import UserORM
 
 class UserRepository(AbstractUserRepository):
 
-    async def add(self, session: ass, user: User) -> User:
-        user_orm = UserORM(created_at=datetime.datetime.now())
+    async def add(self, session: ass, data: CreateUserRequest) -> User:
+        user_orm = UserORM(
+            created_at=datetime.now(),
+        )
         # TODO:: UserDetail/UserActvie/UserEmail/UserPhoneNumber/UserPassword/UserCognitoToken
         session.add(user_orm)
         await session.flush()
