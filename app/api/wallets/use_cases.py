@@ -51,6 +51,7 @@ class CreateWallet:
     async def execute(self, name: str) -> Wallet:
         wallet = Wallet(wallet_id=None, name=name, histories=[])
         sess = self.session.get_session()
+        # INSERT/UPDATE/DELETE などはトランザクションのためbegin()が必要
         async with sess.begin() as s:
             created_wallet = await self.repo.add(s, wallet=wallet)
 
