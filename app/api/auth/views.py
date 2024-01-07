@@ -4,9 +4,6 @@ from typing import Annotated
 from .schemas import LoginRequest, LoginResponse
 from .use_case import Login
 from routes import LoggingRoute
-from dependencies.repository import WalletRepositoryInterface
-from dependencies.session import SessionInterface
-from models.pydantic.user import User
 
 router = APIRouter(
     prefix="/v1", route_class=LoggingRoute
