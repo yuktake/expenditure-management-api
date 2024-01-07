@@ -1,5 +1,5 @@
 from enum import StrEnum
-from pydantic import PositiveInt
+from pydantic import PositiveInt, Field
 from dataclasses import dataclass
 
 from dependencies.datetime import UTCDatetime
@@ -18,6 +18,6 @@ class History(BaseModel):
     history_id: int|None
     name: str
     amount: PositiveInt
-    type: HistoryType
-    history_at: UTCDatetime
+    type: HistoryType = Field(..., description="INCOME:収入, OUTCOME:支出")
+    history_at: UTCDatetime = Field(..., description="収支項目の発生日時（UTC）")
     wallet_id: int

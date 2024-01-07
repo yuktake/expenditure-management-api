@@ -11,9 +11,10 @@ class Wallet(BaseModel):
         self.model_validate(self)
 
     wallet_id: int|None
-    name: str = Field(..., min_length=4, max_length=10)
+    name: str = Field(..., max_length=10)
     histories: list[History]
 
+    # 現在時点の予算
     @property
     def balance(self) -> int:
         return sum(
