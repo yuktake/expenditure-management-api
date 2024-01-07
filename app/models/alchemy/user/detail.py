@@ -24,7 +24,7 @@ class UserDetailORM(BaseORM):
     first_name: Mapped[str] = mapped_column(String(50))
     last_name: Mapped[str] = mapped_column(String(50))
     user: Mapped["UserORM"] = relationship(
-        back_populates="user_detail"
+        back_populates="detail"
     )
 
     @classmethod

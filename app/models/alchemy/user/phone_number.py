@@ -21,7 +21,7 @@ class UserPhoneNumberORM(BaseORM):
     )
     phone_number: Mapped[str] = mapped_column(String(13))
     user: Mapped["UserORM"] = relationship(
-        back_populates="user_phone_number"
+        back_populates="phone_number"
     )
 
     @classmethod

@@ -21,7 +21,7 @@ class UserPasswordORM(BaseORM):
     )
     password: Mapped[str] = mapped_column(String(255))
     user: Mapped["UserORM"] = relationship(
-        back_populates="user_password"
+        back_populates="password"
     )
 
     @classmethod

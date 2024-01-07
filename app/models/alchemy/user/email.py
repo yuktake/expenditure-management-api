@@ -21,7 +21,7 @@ class UserEmailORM(BaseORM):
     )
     email: Mapped[str] = mapped_column(String(50))
     user: Mapped["UserORM"] = relationship(
-        back_populates="user_email"
+        back_populates="email"
     )
 
     @classmethod

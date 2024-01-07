@@ -25,7 +25,7 @@ class UserCognitoTokenORM(BaseORM):
     created_at: Mapped[datetime]
     expired_at: Mapped[datetime]
     user: Mapped["UserORM"] = relationship(
-        back_populates="user_cognito_token"
+        back_populates="cognito_token"
     )
 
     @classmethod

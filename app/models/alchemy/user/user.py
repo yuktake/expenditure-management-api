@@ -21,28 +21,35 @@ class UserORM(BaseORM):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
     created_at: Mapped[datetime]
-    user_detail: Mapped[UserDetailORM] = relationship(
+    detail: Mapped[UserDetailORM] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
     )
-    user_email: Mapped[UserEmailORM] = relationship(
+    email: Mapped[UserEmailORM] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
     )
-    user_cognito_token: Mapped[UserCognitoTokenORM] = relationship(
+    password: Mapped[UserPasswordORM] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
     )
-    user_phone_number: Mapped[UserPhoneNumberORM] = relationship(
+    cognito_token: Mapped[UserCognitoTokenORM] = relationship(
+        back_populates="user",
+        cascade=(
+            "save-update, merge, expunge"
+            ", delete, delete-orphan"
+        ),
+    )
+    phone_number: Mapped[UserPhoneNumberORM] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
