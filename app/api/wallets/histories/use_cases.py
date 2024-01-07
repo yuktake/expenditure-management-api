@@ -3,7 +3,6 @@ from datetime import datetime
 from dependencies.repository import WalletRepositoryInterface
 from dependencies.session import SessionInterface
 
-from dependencies.database import AsyncSession
 from exceptions import NotFound
 from models.pydantic.history import History, HistoryType
 
