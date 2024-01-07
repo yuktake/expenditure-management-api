@@ -7,6 +7,7 @@ from fastapi import (
 )
 from fastapi.security import APIKeyHeader
 from .wallets.views import router as wallets_router
+from .auth.views import router as auth_router
 
 async def get_api_key(
     api_key_header: str = Security(
@@ -27,3 +28,4 @@ router = APIRouter(
     dependencies=[Depends(get_api_key)]
 )
 router.include_router(wallets_router)
+router.include_router(auth_router)

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession as ass
 
@@ -8,7 +10,8 @@ from models.alchemy.user.user import UserORM
 class UserRepository(AbstractUserRepository):
 
     async def add(self, session: ass, user: User) -> User:
-        user_orm = UserORM(name=wallet.name, histories=[])
+        user_orm = UserORM(created_at=datetime.datetime.now())
+        # TODO:: UserDetail/UserActvie/UserEmail/UserPhoneNumber/UserPassword/UserCognitoToken
         session.add(user_orm)
         await session.flush()
         return user_orm.to_entity()
