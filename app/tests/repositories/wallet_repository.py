@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
 from exceptions import AppException
 from models import History, Wallet, HistoryType
-from app.repositories.abstract_wallet_repository import AbstractWalletRepository
+from app.repositories.wallet.abstract_wallet_repository import AbstractWalletRepository
 
 class WalletRepository(AbstractWalletRepository):
     async def add(self, session: AsyncSession, name: str) -> Wallet:
