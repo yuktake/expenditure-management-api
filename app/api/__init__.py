@@ -8,7 +8,6 @@ from fastapi import (
 from fastapi.security import APIKeyHeader
 from .wallets.views import router as wallets_router
 from .auth.views import router as auth_router
-from .users.views import router as user_router
 
 async def get_api_key(
     api_key_header: str = Security(
@@ -31,4 +30,3 @@ router = APIRouter(
 
 router.include_router(auth_router)
 router.include_router(wallets_router)
-router.include_router(user_router)

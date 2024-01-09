@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession as ass
 
 from models.pydantic.user import User
-from api.users.schemas import CreateUserRequest
+from api.admin.users.schemas import CreateUserRequest
 from .abstract_user_repository import AbstractUserRepository
 from models.alchemy.user.user import UserORM
 
