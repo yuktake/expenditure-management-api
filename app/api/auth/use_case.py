@@ -1,26 +1,101 @@
+import hmac
+import hashlib
+import base64
+
+import boto3
+
+from config import Settings
 from dependencies.repository import UserRepositoryInterface
 from dependencies.session import SessionInterface
-from .schemas import LoginResponse
+from .schemas import (
+    AdminInitiateAuthResponse,
+    SetPasswordResponse,
+    LoginResponse
+)
 
 class Login:
-    def __init__(
-        self,
-        session: SessionInterface,
-        repo: UserRepositoryInterface,
-    ) -> None:
-        self.session = session
-        self.repo = repo
-
     async def execute(
         self,
         email: str,
         password: str
+    ) -> AdminInitiateAuthResponse:
+        settings = Settings()
+
+        cognito = boto3.client(
+            'cognito-idp',
+            aws_access_key_id=settings.aws_access_key_id,
+            aws_secret_access_key=settings.aws_secret_access_key,
+            region_name=settings.aws_region,
+        )
+        
+        response = cognito.admin_initiate_auth(
+            UserPoolId=settings.pool_id, 
+            ClientId=settings.app_client_id,
+            AuthFlow='ADMIN_USER_PASSWORD_AUTH',
+            AuthParameters={
+                'USERNAME': email,
+                'PASSWORD': password,
+            }
+        )
+
+        return AdminInitiateAuthResponse(
+            challege_type=response['ChallengeName'],
+            session=response['Session']
+        )
+
+class SetPassword:
+    async def execute(
+        self,
+        email: str,
+        new_password: str,
+        session: str,
+    ) -> SetPasswordResponse:
+        settings = Settings()
+
+        cognito = boto3.client(
+            'cognito-idp',
+            aws_access_key_id=settings.aws_access_key_id,
+            aws_secret_access_key=settings.aws_secret_access_key,
+            region_name=settings.aws_region,
+        )
+
+        response = cognito.admin_respond_to_auth_challenge(
+            UserPoolId=settings.pool_id,
+            ClientId=settings.app_client_id,
+            ChallengeName='NEW_PASSWORD_REQUIRED',
+            ChallengeResponses={'USERNAME': email, 'NEW_PASSWORD': new_password},
+            Session=session
+        )
+
+        return SetPasswordResponse(
+            challege_type=response['ChallengeName'],
+            session=response['Session']
+        )
+
+class VerifySmsCode:
+    async def execute(
+        self,
+        email: str,
+        code: str,
+        session: str,
     ) -> LoginResponse:
-        sess = self.session.get_session()
-        async with sess() as s:
-            user = await self.repo.get_by_id(s, 1)
+        settings = Settings()
+
+        cognito = boto3.client(
+            'cognito-idp',
+            aws_access_key_id=settings.aws_access_key_id,
+            aws_secret_access_key=settings.aws_secret_access_key,
+            region_name=settings.aws_region,
+        )
+
+        response = cognito.admin_respond_to_auth_challenge(
+            UserPoolId=settings.pool_id,
+            ClientId=settings.app_client_id,
+            ChallengeName='SMS_MFA',
+            ChallengeResponses={'USERNAME': email, 'SMS_MFA_CODE': code},
+            Session=session
+        )
 
         return LoginResponse(
-            user_id=user.id,
-            token="aaa",
+            token=response['AuthenticationResult']['AccessToken']
         )
