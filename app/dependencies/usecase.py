@@ -64,6 +64,16 @@ from usecases.auth.auth_usecase import (
     VerifySmsCode,
 )
 
+from usecases.admin.user.abstract_user_usecase import (
+    AbstractCreateUser,
+)
+from usecases.admin.user.test_user_usecase import (
+    CreateUser as TestCreateUser,
+)
+from usecases.admin.user.user_usecase import (
+    CreateUser,
+)
+
 from config import Settings
 
 settings = Settings()
@@ -113,6 +123,10 @@ if settings.status == "testing":
     VerifySmsCodeInterface = Annotated[
         AbstractVerifySmsCode, Depends(TestVerifySmsCode)
     ]
+
+    CreateUserInterface = Annotated[
+        AbstractCreateUser, Depends(TestCreateUser)
+    ]
 else:
     ListWalletsInterface = Annotated[
         AbstractListWallets, Depends(ListWallets)
@@ -157,4 +171,8 @@ else:
     ]
     VerifySmsCodeInterface = Annotated[
         AbstractVerifySmsCode, Depends(VerifySmsCode)
+    ]
+
+    CreateUserInterface = Annotated[
+        AbstractCreateUser, Depends(CreateUser)
     ]

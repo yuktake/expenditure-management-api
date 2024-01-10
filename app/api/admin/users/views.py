@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, status
 from typing import Annotated
 
 from .schemas import CreateUserRequest, CreateUserResponse
-from .use_case import CreateUser
+from dependencies.usecase import (
+    CreateUserInterface,
+)
 from routes import LoggingRoute
 
 router = APIRouter(
@@ -16,7 +18,7 @@ router = APIRouter(
 )
 async def create_user(
     data: CreateUserRequest,
-    use_case: Annotated[CreateUser, Depends(CreateUser)],
+    use_case: CreateUserInterface,
 ) -> CreateUserResponse:
     """Userの作成API"""
     return CreateUserResponse.model_validate(
