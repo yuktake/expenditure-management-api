@@ -7,6 +7,11 @@ from models.pydantic.user import User
 from api.admin.users.schemas import CreateUserRequest
 from .abstract_user_repository import AbstractUserRepository
 from models.alchemy.user.user import UserORM
+from models.alchemy.user.detail import UserDetailORM
+from models.alchemy.user.email import UserEmailORM
+from models.alchemy.user.password import UserPasswordORM
+from models.alchemy.user.phone_number import UserPhoneNumberORM
+from models.alchemy.user.active import UserActiveORM
 
 class UserRepository(AbstractUserRepository):
 
@@ -14,9 +19,44 @@ class UserRepository(AbstractUserRepository):
         user_orm = UserORM(
             created_at=datetime.now(),
         )
-        # TODO:: UserDetail/UserActvie/UserEmail/UserPhoneNumber/UserPassword/UserCognitoToken
         session.add(user_orm)
         await session.flush()
+
+        user_detail_orm = UserDetailORM(
+            user_id=user_orm.id,
+            first_name=data.first_name,
+            last_name=data.last_name,
+        )
+        session.add(user_detail_orm)
+
+        user_email_orm = UserEmailORM(
+            user_id=user_orm.id,
+            email=data.email,
+        )
+        session.add(user_email_orm)
+
+        user_password_orm = UserPasswordORM(
+            user_id=user_orm.id,
+            password=data.password,
+        )
+        session.add(user_password_orm)
+
+        user_phone_number_orm = UserPhoneNumberORM(
+            user_id=user_orm.id,
+            phone_number=data.phone_number,
+        )
+        session.add(user_phone_number_orm)
+
+        # TODO:: /UserCognitoToken
+
+        user_active_orm = UserActiveORM(
+            user_id=user_orm.id,
+            created_at=datetime.now(),
+        )
+        session.add(user_active_orm)
+
+        await session.flush()
+
         return user_orm.to_entity()
 
     async def get_by_id(self, session: ass, user_id: int,) -> User | None:
