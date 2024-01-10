@@ -11,4 +11,4 @@ class UserPhoneNumber(BaseModel):
         self.model_validate(self)
 
     user_id: int
-    phone_number: str = Field(..., min_length=11, max_length=11)
+    phone_number: str = Field(..., min_length=11, max_length=20)
