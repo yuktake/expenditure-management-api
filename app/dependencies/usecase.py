@@ -48,6 +48,22 @@ from usecases.wallet.history.history_usecase import (
     MoveHistory,
 )
 
+from usecases.auth.abstract_auth_usecase import (
+    AbstractLogin,
+    AbstractSetPassword,
+    AbstractVerifySmsCode,
+)
+from usecases.auth.test_auth_usecase import (
+    Login as TestLogin,
+    SetPassword as TestSetPassword,
+    VerifySmsCode as TestVerifySmsCode,
+)
+from usecases.auth.auth_usecase import (
+    Login,
+    SetPassword,
+    VerifySmsCode,
+)
+
 from config import Settings
 
 settings = Settings()
@@ -87,6 +103,16 @@ if settings.status == "testing":
     MoveHistoryInterface = Annotated[
         AbstractMoveHistory, Depends(TestMoveHistory)
     ]
+
+    LoginInterface = Annotated[
+        AbstractLogin, Depends(TestLogin)
+    ]
+    SetPasswordInterface = Annotated[
+        AbstractSetPassword, Depends(TestSetPassword)
+    ]
+    VerifySmsCodeInterface = Annotated[
+        AbstractVerifySmsCode, Depends(TestVerifySmsCode)
+    ]
 else:
     ListWalletsInterface = Annotated[
         AbstractListWallets, Depends(ListWallets)
@@ -121,4 +147,14 @@ else:
     ]
     MoveHistoryInterface = Annotated[
         AbstractMoveHistory, Depends(MoveHistory)
+    ]
+
+    LoginInterface = Annotated[
+        AbstractLogin, Depends(Login)
+    ]
+    SetPasswordInterface = Annotated[
+        AbstractSetPassword, Depends(SetPassword)
+    ]
+    VerifySmsCodeInterface = Annotated[
+        AbstractVerifySmsCode, Depends(VerifySmsCode)
     ]

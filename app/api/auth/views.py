@@ -10,10 +10,10 @@ from .schemas import (
     SmsRequest,
     LoginResponse,
 )
-from .use_case import (
-    Login,
-    SetPassword,
-    VerifySmsCode,
+from dependencies.usecase import(
+    LoginInterface,
+    SetPasswordInterface,
+    VerifySmsCodeInterface,
 )
 from routes import LoggingRoute
 
@@ -28,7 +28,7 @@ router = APIRouter(
 )
 async def post_login(
     data: LoginRequest,
-    use_case: Annotated[Login, Depends(Login)],
+    use_case: LoginInterface,
 ) -> AdminInitiateAuthResponse:
 
     return AdminInitiateAuthResponse.model_validate(
@@ -42,7 +42,7 @@ async def post_login(
 )
 async def post_set_password(
     data: SetPasswordRequest,
-    use_case: Annotated[SetPassword, Depends(SetPassword)],
+    use_case: SetPasswordInterface,
 ) -> SetPasswordResponse:
 
     return SetPasswordResponse.model_validate(
@@ -60,7 +60,7 @@ async def post_set_password(
 )
 async def post_verify_sms(
     data: SmsRequest,
-    use_case: Annotated[VerifySmsCode, Depends(VerifySmsCode)],
+    use_case: VerifySmsCodeInterface,
 ) -> LoginResponse:
 
     return LoginResponse.model_validate(
