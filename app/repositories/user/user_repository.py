@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession as ass
 
 from models.pydantic.user.user import User
@@ -17,6 +18,7 @@ class UserRepository(AbstractUserRepository):
 
     async def add(self, session: ass, data: CreateUserRequest) -> User:
         user_orm = UserORM(
+            cognito_token=None,
             created_at=datetime.now(),
         )
         session.add(user_orm)
@@ -63,8 +65,16 @@ class UserRepository(AbstractUserRepository):
         stmt = (
             select(UserORM)
             .where(UserORM.id == user_id)
+            .options(
+                joinedload(UserORM.detail),
+                joinedload(UserORM.email),
+                joinedload(UserORM.password),
+                joinedload(UserORM.cognito_token),
+                joinedload(UserORM.phone_number),
+            )
         )
         user = await session.scalar(stmt)
         if not user:
             return None
+
         return user.to_entity()

@@ -15,13 +15,15 @@ class UserPhoneNumberORM(BaseORM):
     __tablename__ = "user_phone_numbers"
     user_id: Mapped[int] = mapped_column(
         ForeignKey(
-            "users.id", ondelete="CASCADE"
+            "users.id", 
+            ondelete="CASCADE",
         ),
         primary_key=True,
     )
     phone_number: Mapped[str] = mapped_column(String(13))
     user: Mapped["UserORM"] = relationship(
-        back_populates="phone_number"
+        back_populates="phone_number",
+        lazy="joined",
     )
 
     @classmethod

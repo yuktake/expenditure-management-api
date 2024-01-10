@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import (
     ForeignKey,
     String,
+    Integer,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -16,8 +17,10 @@ from models.pydantic.user.cognito_token import UserCognitoToken
 class UserCognitoTokenORM(BaseORM):
     __tablename__ = "user_cognito_tokens"
     user_id: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey(
-            "users.id", ondelete="CASCADE"
+            "users.id", 
+            ondelete="CASCADE",
         ),
         primary_key=True,
     )
@@ -25,7 +28,9 @@ class UserCognitoTokenORM(BaseORM):
     created_at: Mapped[datetime]
     expired_at: Mapped[datetime]
     user: Mapped["UserORM"] = relationship(
-        back_populates="cognito_token"
+        back_populates="cognito_token",
+        lazy="joined",
+        single_parent=True,
     )
 
     @classmethod

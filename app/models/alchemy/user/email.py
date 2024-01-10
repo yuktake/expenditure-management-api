@@ -15,13 +15,15 @@ class UserEmailORM(BaseORM):
     __tablename__ = "user_emails"
     user_id: Mapped[int] = mapped_column(
         ForeignKey(
-            "users.id", ondelete="CASCADE"
+            "users.id", 
+            ondelete="CASCADE",
         ),
         primary_key=True,
     )
     email: Mapped[str] = mapped_column(String(50))
     user: Mapped["UserORM"] = relationship(
-        back_populates="email"
+        back_populates="email",
+        lazy="joined",
     )
 
     @classmethod

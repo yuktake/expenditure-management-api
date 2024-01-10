@@ -1,4 +1,3 @@
-from models.alchemy.base import BaseORM
 from sqlalchemy import (
     ForeignKey,
     String,
@@ -10,6 +9,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
+from models.alchemy.base import BaseORM
 from models.pydantic.user.detail import UserDetail
 
 class UserDetailORM(BaseORM):
@@ -17,14 +17,16 @@ class UserDetailORM(BaseORM):
     user_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey(
-            "users.id", ondelete="CASCADE"
+            "users.id", 
+            ondelete="CASCADE",
         ),
         primary_key=True,
     )
     first_name: Mapped[str] = mapped_column(String(50))
     last_name: Mapped[str] = mapped_column(String(50))
     user: Mapped["UserORM"] = relationship(
-        back_populates="detail"
+        back_populates="detail",
+        lazy="joined",
     )
 
     @classmethod

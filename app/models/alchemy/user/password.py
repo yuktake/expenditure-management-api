@@ -15,13 +15,15 @@ class UserPasswordORM(BaseORM):
     __tablename__ = "user_passwords"
     user_id: Mapped[int] = mapped_column(
         ForeignKey(
-            "users.id", ondelete="CASCADE"
+            "users.id", 
+            ondelete="CASCADE",
         ),
         primary_key=True,
     )
     password: Mapped[str] = mapped_column(String(255))
     user: Mapped["UserORM"] = relationship(
-        back_populates="password"
+        back_populates="password",
+        lazy="joined",
     )
 
     @classmethod

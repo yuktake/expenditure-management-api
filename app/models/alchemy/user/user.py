@@ -1,5 +1,6 @@
-from models.alchemy.base import BaseORM
 from datetime import datetime
+from typing import Optional
+
 from sqlalchemy import (
     ForeignKey,
     String,
@@ -10,51 +11,52 @@ from sqlalchemy.orm import (
     relationship,
 )
 
+from models.alchemy.base import BaseORM
 from models.pydantic.user.user import User
-from models.alchemy.user.detail import UserDetailORM
-from models.alchemy.user.email import UserEmailORM
-from models.alchemy.user.password import UserPasswordORM
-from models.alchemy.user.cognito_token import UserCognitoTokenORM
-from models.alchemy.user.phone_number import UserPhoneNumberORM
 
 class UserORM(BaseORM):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
     created_at: Mapped[datetime]
-    detail: Mapped[UserDetailORM] = relationship(
+    detail: Mapped["UserDetailORM"] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
+        lazy="joined"
     )
-    email: Mapped[UserEmailORM] = relationship(
+    email: Mapped[Optional["UserEmailORM"]] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
+        lazy="joined"
     )
-    password: Mapped[UserPasswordORM] = relationship(
+    password: Mapped[Optional["UserPasswordORM"]] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
+        lazy="joined"
     )
-    cognito_token: Mapped[UserCognitoTokenORM] = relationship(
+    cognito_token: Mapped[Optional["UserCognitoTokenORM"]] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
+        lazy="joined",
     )
-    phone_number: Mapped[UserPhoneNumberORM] = relationship(
+    phone_number: Mapped[Optional["UserPhoneNumberORM"]] = relationship(
         back_populates="user",
         cascade=(
             "save-update, merge, expunge"
             ", delete, delete-orphan"
         ),
+        lazy="joined"
     )
 
     @classmethod
