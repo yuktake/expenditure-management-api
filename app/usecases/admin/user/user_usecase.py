@@ -26,7 +26,7 @@ class CreateUser(AbstractCreateUser):
             aws_secret_access_key=settings.aws_secret_access_key,
             region_name=settings.aws_region,
         )
-        user = cognito.admin_create_user(
+        cognito_user = cognito.admin_create_user(
             UserPoolId=settings.pool_id, 
             Username=data.email,
             UserAttributes=[
