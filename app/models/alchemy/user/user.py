@@ -10,7 +10,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from models.pydantic.user import User
+from models.pydantic.user.user import User
 from models.alchemy.user.detail import UserDetailORM
 from models.alchemy.user.email import UserEmailORM
 from models.alchemy.user.password import UserPasswordORM

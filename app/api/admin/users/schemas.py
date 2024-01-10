@@ -3,7 +3,7 @@ from models.pydantic.base import BaseModel
 from dependencies.datetime import UTCDatetime
 
 from models.pydantic.base import BaseModel
-from models.pydantic.user import User
+from models.pydantic.user.user import User
 
 class CreateUserRequest(BaseModel):
     first_name: str

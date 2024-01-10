@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession as ass
 
-from models.pydantic.user import User
+from models.pydantic.user.user import User
 from api.admin.users.schemas import CreateUserRequest
 from .abstract_user_repository import AbstractUserRepository
 from models.alchemy.user.user import UserORM

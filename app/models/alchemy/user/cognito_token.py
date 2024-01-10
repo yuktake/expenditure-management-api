@@ -11,7 +11,7 @@ from sqlalchemy.orm import (
 )
 
 from models.alchemy.base import BaseORM
-from models.pydantic.user import UserCognitoToken
+from models.pydantic.user.cognito_token import UserCognitoToken
 
 class UserCognitoTokenORM(BaseORM):
     __tablename__ = "user_cognito_tokens"

@@ -10,7 +10,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from models.pydantic.user import UserDetail
+from models.pydantic.user.detail import UserDetail
 
 class UserDetailORM(BaseORM):
     __tablename__ = "user_details"

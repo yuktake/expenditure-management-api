@@ -9,7 +9,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from models.pydantic.user import UserPhoneNumber
+from models.pydantic.user.phone_number import UserPhoneNumber
 
 class UserPhoneNumberORM(BaseORM):
     __tablename__ = "user_phone_numbers"

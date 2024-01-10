@@ -10,7 +10,7 @@ from sqlalchemy.orm import (
 )
 
 from models.alchemy.base import BaseORM
-from models.pydantic.user import UserActive
+from models.pydantic.user.active import UserActive
 
 class UserActiveORM(BaseORM):
     __tablename__ = "user_actives"

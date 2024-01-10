@@ -9,7 +9,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from models.pydantic.user import UserEmail
+from models.pydantic.user.email import UserEmail
 
 class UserEmailORM(BaseORM):
     __tablename__ = "user_emails"

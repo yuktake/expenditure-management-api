@@ -9,7 +9,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from models.pydantic.user import UserPassword
+from models.pydantic.user.password import UserPassword
 
 class UserPasswordORM(BaseORM):
     __tablename__ = "user_passwords"

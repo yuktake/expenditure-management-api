@@ -10,7 +10,7 @@ from sqlalchemy.orm import (
 )
 
 from models.alchemy.base import BaseORM
-from models.pydantic.user import UserLeave
+from models.pydantic.user.leave import UserLeave
 
 class UserLeaveORM(BaseORM):
     __tablename__ = "user_leaves"
