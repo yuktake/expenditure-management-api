@@ -12,13 +12,14 @@ from .schemas import (
     PutHistoryRequest,
     PutHistoryResponse,
 )
-from .use_cases import (
-    GetHistory,
-    ListHistories,
-    CreateHistory,
-    UpdateHistory,
-    DeleteHistory,
-    MoveHistory,
+
+from dependencies.usecase import (
+    ListHistoriesInterface,
+    GetHistoryInterface,
+    CreateHistoryInterface,
+    UpdateHistoryInterface,
+    DeleteHistoryInterface,
+    MoveHistoryInterface,
 )
 
 router = APIRouter(
@@ -28,7 +29,7 @@ router = APIRouter(
 @router.get("", response_model=GetHistoriesResponse)
 async def get_histories(
     wallet_id: int,
-    use_case: Annotated[ListHistories, Depends(ListHistories)],
+    use_case: ListHistoriesInterface,
 ) -> GetHistoriesResponse:
     """収支項目の一覧取得API"""
     return GetHistoriesResponse(
@@ -43,7 +44,7 @@ async def get_histories(
 async def get_history(
     wallet_id: int,
     history_id: int,
-    use_case: Annotated[GetHistory, Depends(GetHistory)],
+    use_case: GetHistoryInterface,
 ) -> GetHistoryResponse:
     """収支項目の個別取得API"""
     return GetHistoryResponse.model_validate(
@@ -61,7 +62,7 @@ async def get_history(
 async def post_history(
     wallet_id: int,
     data: PostHistoryRequest,
-    use_case: Annotated[CreateHistory, Depends(CreateHistory)],
+    use_case: CreateHistoryInterface,
 ) -> PostHistoryResponse:
     """収支項目の作成API"""
     return PostHistoryResponse.model_validate(
@@ -83,7 +84,7 @@ async def put_history(
     wallet_id: int,
     history_id: int,
     data: PutHistoryRequest,
-    use_case: Annotated[UpdateHistory, Depends(UpdateHistory)],
+    use_case: UpdateHistoryInterface,
 ) -> PutHistoryResponse:
     """収支項目の更新API"""
     return PutHistoryResponse.model_validate(
@@ -105,7 +106,7 @@ async def put_history(
 async def delete_history(
     wallet_id: int,
     history_id: int,
-    use_case: Annotated[DeleteHistory, Depends(DeleteHistory)],
+    use_case: DeleteHistoryInterface,
 ) -> None:
     """収支項目の削除API"""
     await use_case.execute(
@@ -121,7 +122,7 @@ async def move_history(
     wallet_id: int,
     history_id: int,
     data: MoveHistoryRequest,
-    use_case: Annotated[MoveHistory, Depends(MoveHistory)],
+    use_case: MoveHistoryInterface,
 ) -> MoveHistoryResponse:
     """収支項目の移動API
 
