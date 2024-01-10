@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 
 from models.pydantic.history import History, HistoryType
 
-class AbstractListHistories:
+class AbstractListHistories(ABC):
 
     @abstractmethod
     async def execute(self, wallet_id: int) -> list[History]:
         raise NotImplementedError()
 
-class AbstractGetHistory:
+class AbstractGetHistory(ABC):
 
     @abstractmethod
     async def execute(
@@ -19,7 +19,7 @@ class AbstractGetHistory:
     ) -> History:
         raise NotImplementedError()
 
-class AbstractCreateHistory:
+class AbstractCreateHistory(ABC):
 
     @abstractmethod
     async def execute(
@@ -32,7 +32,7 @@ class AbstractCreateHistory:
     ) -> History:
         raise NotImplementedError()
 
-class AbstractUpdateHistory:
+class AbstractUpdateHistory(ABC):
 
     @abstractmethod
     async def execute(
@@ -46,7 +46,7 @@ class AbstractUpdateHistory:
     ) -> History:
         raise NotImplementedError()
 
-class AbstractDeleteHistory:
+class AbstractDeleteHistory(ABC):
 
     @abstractmethod
     async def execute(
@@ -56,7 +56,7 @@ class AbstractDeleteHistory:
     ) -> None:
         raise NotImplementedError()
 
-class AbstractMoveHistory:
+class AbstractMoveHistory(ABC):
 
     @abstractmethod
     async def execute(
