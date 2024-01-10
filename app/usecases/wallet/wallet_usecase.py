@@ -3,8 +3,15 @@ from dependencies.session import SessionInterface
 
 from exceptions import NotFound
 from models.pydantic.wallet import Wallet
+from .abstract_wallet_usecase import(
+    AbstractListWallets,
+    AbstractGetWallet,
+    AbstractCreateWallet,
+    AbstractUpdateWallet,
+    AbstractDeleteWallet,
+)
 
-class ListWallets:
+class ListWallets(AbstractListWallets):
 
     def __init__(
         self,
@@ -20,7 +27,7 @@ class ListWallets:
             wallets = await self.repo.get_all(s)
         return wallets
 
-class GetWallet:
+class GetWallet(AbstractGetWallet):
     def __init__(
         self,
         session: SessionInterface,
@@ -39,7 +46,7 @@ class GetWallet:
                 raise NotFound("wallet", wallet_id)
         return wallet
 
-class CreateWallet:
+class CreateWallet(AbstractCreateWallet):
     def __init__(
         self,
         session: SessionInterface,
@@ -57,7 +64,7 @@ class CreateWallet:
 
         return created_wallet
 
-class UpdateWallet:
+class UpdateWallet(AbstractUpdateWallet):
     def __init__(
         self,
         session: SessionInterface,
@@ -84,7 +91,7 @@ class UpdateWallet:
 
         return update_wallet
 
-class DeleteWallet:
+class DeleteWallet(AbstractDeleteWallet):
     def __init__(
         self,
         session: SessionInterface,
