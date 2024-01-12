@@ -1,8 +1,8 @@
-from pydantic import Field
+from pydantic import Field, field_validator
 from dataclasses import dataclass
 
 from models.pydantic.base import BaseModel
-from models.pydantic.history import History
+from models.pydantic.history import History, HistoryType
 
 @dataclass(frozen=True)
 class Wallet(BaseModel):
@@ -25,6 +25,9 @@ class Wallet(BaseModel):
         )
 
     # 独自関数でのValidationも可能
-    # @validator("name", pre=True)
-    # def test(cls, v: Any) -> Any:
-    #     raise NotImplementedError()
+    @field_validator("name", mode="before")
+    def name_validation(cls, v: str) -> str:
+        if v == "test":
+            raise ValueError("test is not allowed")
+        
+        return v
