@@ -1,6 +1,4 @@
-from config import Settings
-from typing import Annotated
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Query, status
 from routes import LoggingRoute
 from .histories.views import (
     router as histories_router,
@@ -15,12 +13,13 @@ from .schemas import (
     PutWalletResponse,
     Wallet,
 )
-from .use_cases import (
-    GetWallet,
-    ListWallets,
-    CreateWallet,
-    UpdateWallet,
-    DeleteWallet,
+
+from dependencies.usecase import (
+    ListWalletsInterface,
+    GetWalletInterface,
+    CreateWalletInterface,
+    UpdateWalletInterface,
+    DeleteWalletInterface,
 )
 
 router = APIRouter(
@@ -29,7 +28,7 @@ router = APIRouter(
 
 @router.get("", response_model=GetWalletsResponse)
 async def get_wallets(
-    use_case: Annotated[ListWallets, Depends(ListWallets)],
+    use_case: ListWalletsInterface,
 ) -> GetWalletsResponse:
     """Walletの一覧取得API"""
     return GetWalletsResponse(
@@ -43,7 +42,7 @@ async def get_wallets(
 )
 async def get_wallet(
     wallet_id: int,
-    use_case: Annotated[GetWallet, Depends(GetWallet)],
+    use_case: GetWalletInterface,
     include_histories: bool = Query(
         False,
         description="収支項目一覧もレスポンスに含める場合はTrue",
@@ -69,7 +68,7 @@ async def get_wallet(
 )
 async def post_wallet(
     data: PostWalletRequest,
-    use_case: Annotated[CreateWallet, Depends(CreateWallet)],
+    use_case: CreateWalletInterface,
 ) -> PostWalletResponse:
     """Walletの作成API"""
     return PostWalletResponse.model_validate(
@@ -84,7 +83,7 @@ async def post_wallet(
 async def put_wallet(
     wallet_id: int,
     data: PutWalletRequest,
-    use_case: Annotated[UpdateWallet, Depends(UpdateWallet)],
+    use_case: UpdateWalletInterface,
 ) -> PutWalletResponse:
     """Walletの更新API"""
     return PutWalletResponse.model_validate(
@@ -99,7 +98,7 @@ async def put_wallet(
 )
 async def delete_wallet(
     wallet_id: int,
-    use_case: Annotated[DeleteWallet, Depends(DeleteWallet)],
+    use_case: DeleteWalletInterface,
 ) -> None:
     """Walletの削除API"""
     await use_case.execute(wallet_id=wallet_id)

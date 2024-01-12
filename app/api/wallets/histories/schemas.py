@@ -1,14 +1,7 @@
 from pydantic import Field, PositiveInt
-from models import BaseModel, HistoryType, UTCDatetime
-
-class History(BaseModel):
-    history_id: int
-    name: str
-    amount: PositiveInt
-    type: HistoryType = Field(
-        ..., description="INCOME:収入, OUTCOME:支出")
-    history_at: UTCDatetime = Field(
-        ..., description="収支項目の発生日時（UTC）")
+from models.pydantic.base import BaseModel
+from models.pydantic.history import History, HistoryType
+from dependencies.datetime import UTCDatetime
 
 class GetHistoryResponse(History):
     pass

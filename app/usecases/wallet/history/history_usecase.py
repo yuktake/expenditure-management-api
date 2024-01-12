@@ -3,11 +3,18 @@ from datetime import datetime
 from dependencies.repository import WalletRepositoryInterface
 from dependencies.session import SessionInterface
 
-from dependencies.database import AsyncSession
 from exceptions import NotFound
-from models import History, HistoryType
+from models.pydantic.history import History, HistoryType
+from .abstract_history_usecase import(
+    AbstractListHistories,
+    AbstractGetHistory,
+    AbstractCreateHistory,
+    AbstractUpdateHistory,
+    AbstractDeleteHistory,
+    AbstractMoveHistory,
+)
 
-class ListHistories:
+class ListHistories(AbstractListHistories):
     def __init__(
         self,
         session: SessionInterface,
@@ -25,7 +32,7 @@ class ListHistories:
 
         return wallet.histories
 
-class GetHistory:
+class GetHistory(AbstractGetHistory):
     def __init__(
         self,
         session: SessionInterface,
@@ -47,7 +54,7 @@ class GetHistory:
 
         return history
 
-class CreateHistory:
+class CreateHistory(AbstractCreateHistory):
     def __init__(
         self,
         session: SessionInterface,
@@ -84,7 +91,7 @@ class CreateHistory:
             )
         return created_history
 
-class UpdateHistory:
+class UpdateHistory(AbstractUpdateHistory):
     def __init__(
         self,
         session: SessionInterface,
@@ -119,7 +126,7 @@ class UpdateHistory:
             await self.repo.update_history(s, wallet_id, update_history)
         return update_history
 
-class DeleteHistory:
+class DeleteHistory(AbstractDeleteHistory):
     def __init__(
         self,
         session: SessionInterface,
@@ -137,7 +144,7 @@ class DeleteHistory:
             if history:
                 await self.repo.delete_history(s, history.wallet_id, history)
 
-class MoveHistory:
+class MoveHistory(AbstractMoveHistory):
     def __init__(
         self,
         session: SessionInterface,
@@ -171,4 +178,5 @@ class MoveHistory:
                 history_at = history.history_at
             )
             await self.repo.update_history(s, wallet_id, move_history)
+
         return move_history

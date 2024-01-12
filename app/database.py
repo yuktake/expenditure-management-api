@@ -1,6 +1,5 @@
 import logging
-from typing import Annotated, AsyncIterator
-from fastapi import Depends
+from typing import AsyncIterator
 from sqlalchemy import Connection, inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import (
@@ -8,12 +7,14 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from exceptions import AppException
-from repositories.wallet import BaseORM
-        
+from models.alchemy.base import BaseORM
+from config import Settings
+
 logger = logging.getLogger(__name__)
+settings = Settings()
 
 async_engine = create_async_engine(
-    "sqlite+aiosqlite:///database.db",
+    settings.db_url,
 )
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,

@@ -1,15 +1,17 @@
-from dependencies.database import AsyncSession
 from dependencies.repository import WalletRepositoryInterface
 from dependencies.session import SessionInterface
 
-
 from exceptions import NotFound
-from models import Wallet
+from models.pydantic.wallet import Wallet
+from .abstract_wallet_usecase import(
+    AbstractListWallets,
+    AbstractGetWallet,
+    AbstractCreateWallet,
+    AbstractUpdateWallet,
+    AbstractDeleteWallet,
+)
 
-from typing import AsyncIterator
-from sqlalchemy.ext.asyncio import async_sessionmaker
-
-class ListWallets:
+class ListWallets(AbstractListWallets):
 
     def __init__(
         self,
@@ -25,7 +27,7 @@ class ListWallets:
             wallets = await self.repo.get_all(s)
         return wallets
 
-class GetWallet:
+class GetWallet(AbstractGetWallet):
     def __init__(
         self,
         session: SessionInterface,
@@ -44,7 +46,7 @@ class GetWallet:
                 raise NotFound("wallet", wallet_id)
         return wallet
 
-class CreateWallet:
+class CreateWallet(AbstractCreateWallet):
     def __init__(
         self,
         session: SessionInterface,
@@ -56,12 +58,13 @@ class CreateWallet:
     async def execute(self, name: str) -> Wallet:
         wallet = Wallet(wallet_id=None, name=name, histories=[])
         sess = self.session.get_session()
+        # INSERT/UPDATE/DELETE などはトランザクションのためbegin()が必要
         async with sess.begin() as s:
             created_wallet = await self.repo.add(s, wallet=wallet)
 
         return created_wallet
 
-class UpdateWallet:
+class UpdateWallet(AbstractUpdateWallet):
     def __init__(
         self,
         session: SessionInterface,
@@ -88,7 +91,7 @@ class UpdateWallet:
 
         return update_wallet
 
-class DeleteWallet:
+class DeleteWallet(AbstractDeleteWallet):
     def __init__(
         self,
         session: SessionInterface,

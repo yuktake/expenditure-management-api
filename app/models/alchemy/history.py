@@ -1,28 +1,25 @@
+from models.alchemy.base import BaseORM
 from datetime import datetime
 from sqlalchemy import (
     CheckConstraint,
     Enum,
     ForeignKey,
     Integer,
+    String,
 )
 from sqlalchemy.orm import (
-    DeclarativeBase,
     Mapped,
     mapped_column,
     relationship,
 )
-from models import History, Wallet, HistoryType
-
-
-class BaseORM(DeclarativeBase):
-    pass
+from models.pydantic.history import History, HistoryType
 
 class HistoryORM(BaseORM):
     __tablename__ = "histories"
     history_id: Mapped[int] = mapped_column(
         primary_key=True
     )
-    name: Mapped[str]
+    name: Mapped[str] = mapped_column(String(50))
     amount: Mapped[int] = mapped_column(
         Integer, CheckConstraint("amount > 0")
     )
@@ -60,33 +57,3 @@ class HistoryORM(BaseORM):
         self.type = history.type
         self.wallet_id = history.wallet_id
         self.history_at = history.history_at
-
-class WalletORM(BaseORM):
-    __tablename__ = "wallets"
-    wallet_id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str]
-    histories: Mapped[
-        list[HistoryORM]
-    ] = relationship(
-        back_populates="wallet",
-        order_by=HistoryORM.history_at.desc(),
-        cascade=(
-            "save-update, merge, expunge"
-            ", delete, delete-orphan"
-        ),
-    )
-
-    @classmethod
-    def from_entity(cls, wallet: Wallet):
-        return cls(
-            wallet_id=wallet.wallet_id,
-            name=wallet.name,
-            histories=wallet.histories,
-        )
-
-    def to_entity(self) -> Wallet:
-        return Wallet.model_validate(self)
-
-    def update(self, wallet: Wallet, histories: list[HistoryORM]) -> None:
-        self.name = wallet.name
-        self.histories = histories

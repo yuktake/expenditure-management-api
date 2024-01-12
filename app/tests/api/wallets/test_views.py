@@ -1,6 +1,5 @@
 import pytest
-from datetime import datetime
-from models import Wallet, HistoryType
+from models import HistoryType
 
 @pytest.mark.anyio
 async def test_get_wallets(ac):
