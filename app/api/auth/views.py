@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Response
 
 from .schemas import (
     LoginRequest, 
@@ -60,11 +60,24 @@ async def post_verify_sms(
     data: SmsRequest,
     use_case: VerifySmsCodeInterface,
 ) -> LoginResponse:
+    
+    login_response = await use_case.execute(
+        email=data.email, 
+        code=data.code, 
+        session=data.session
+    )
+
+    response.set_cookie(
+        key="access_token",
+        value=login_response.token,
+        httponly=True,
+        secure=True,
+        # access_tokenの有効期限より短い時間に設定する
+        max_age=1800,
+        # Strice or Laxを指定することで、Cookieが送信される条件を制限できる
+        Samesite="Strict",
+    )
 
     return LoginResponse.model_validate(
-        await use_case.execute(
-            email=data.email, 
-            code=data.code, 
-            session=data.session
-        )
+        login_response
     )
