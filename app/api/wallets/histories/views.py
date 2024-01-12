@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 from routes import LoggingRoute
 from .schemas import (
     GetHistoriesResponse,

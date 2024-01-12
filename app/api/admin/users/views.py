@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, status
-from typing import Annotated
+from fastapi import APIRouter, status
 
 from .schemas import CreateUserRequest, CreateUserResponse
 from dependencies.usecase import (

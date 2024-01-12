@@ -1,8 +1,6 @@
 import boto3
 
 from config import Settings
-from dependencies.repository import UserRepositoryInterface
-from dependencies.session import SessionInterface
 from api.auth.schemas import (
     AdminInitiateAuthResponse,
     SetPasswordResponse,

@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from pydantic import Field
-
 from dependencies.datetime import UTCDatetime
 from models.pydantic.base import BaseModel
 from models.pydantic.user.detail import UserDetail

@@ -6,7 +6,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
-    relationship,
 )
 
 from models.alchemy.base import BaseORM

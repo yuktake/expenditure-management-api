@@ -1,6 +1,5 @@
 import logging
-from typing import Annotated, AsyncIterator
-from fastapi import Depends
+from typing import AsyncIterator
 from sqlalchemy import Connection, inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import (

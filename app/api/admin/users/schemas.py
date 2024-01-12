@@ -1,6 +1,5 @@
 from pydantic import Field
 from models.pydantic.base import BaseModel
-from dependencies.datetime import UTCDatetime
 
 from models.pydantic.base import BaseModel
 from models.pydantic.user.user import User

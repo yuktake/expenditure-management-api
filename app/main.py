@@ -1,11 +1,10 @@
 from contextlib import asynccontextmanager
 from database import create_database_if_not_exist
-from fastapi import FastAPI, Header, Path, Query
+from fastapi import FastAPI
 from api import router as api_router
 from exceptions import init_exception_handler
 from log import init_log
 from middlewares import init_middlewares
-from config import Settings
 
 # NOTE:: create_database_if_not_exist前にORMクラスを事前にimportしておく必要がある
 # またはDIで間接的にimportされている場合もある

@@ -1,6 +1,4 @@
-from config import Settings
-from typing import Annotated
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Query, status
 from routes import LoggingRoute
 from .histories.views import (
     router as histories_router,
