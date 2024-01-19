@@ -52,16 +52,19 @@ from usecases.auth.abstract_auth_usecase import (
     AbstractLogin,
     AbstractSetPassword,
     AbstractChangePassword,
+    AbstractLogout,
 )
 from usecases.auth.test_auth_usecase import (
     Login as TestLogin,
     SetPassword as TestSetPassword,
     ChangePassword as TestChangePassword,
+    Logout as TestLogout,
 )
 from usecases.auth.auth_usecase import (
     Login,
     SetPassword,
     ChangePassword,
+    Logout,
 )
 
 from usecases.admin.user.abstract_user_usecase import (
@@ -123,6 +126,9 @@ if settings.status == "testing":
     ChangePasswordInterface = Annotated[
         AbstractChangePassword, Depends(TestChangePassword)
     ]
+    LogoutInterface = Annotated[
+        AbstractLogout, Depends(TestLogout)
+    ]
 
     CreateUserInterface = Annotated[
         AbstractCreateUser, Depends(TestCreateUser)
@@ -171,6 +177,9 @@ else:
     ]
     ChangePasswordInterface = Annotated[
         AbstractChangePassword, Depends(ChangePassword)
+    ]
+    LogoutInterface = Annotated[
+        AbstractLogout, Depends(Logout)
     ]
 
     CreateUserInterface = Annotated[

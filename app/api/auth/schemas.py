@@ -31,5 +31,14 @@ class ChangePasswordRequest(BaseModel):
 class ChangePasswordResponse(BaseModel):
     result: bool
 
+class ChangePasswordResponse(BaseModel):
+    result: bool
+
+class LogoutRequest(BaseModel):
+    access_token: str
+
+class LogoutResponse(BaseModel):
+    result: bool
+
 class ErrorResponse(BaseModel):
     message: str

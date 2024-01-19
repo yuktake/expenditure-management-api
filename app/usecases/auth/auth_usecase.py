@@ -5,12 +5,14 @@ from api.auth.schemas import (
     AdminInitiateAuthResponse,
     LoginResponse,
     ChangePasswordResponse,
-    ErrorResponse
+    LogoutResponse,
+    ErrorResponse,
 )
 from .abstract_auth_usecase import(
     AbstractLogin,
     AbstractSetPassword,
     AbstractChangePassword,
+    AbstractLogout,
 )
 
 settings = Settings()
@@ -96,5 +98,19 @@ class ChangePassword(AbstractChangePassword):
             return ErrorResponse(message=str(e))
         
         return ChangePasswordResponse(
+            result=True,
+        )
+    
+class Logout(AbstractLogout):
+    async def execute(self) -> LogoutResponse:
+        try:
+            cognito.admin_user_global_sign_out(
+                UserPoolId=settings.pool_id,
+                Username="",
+            )
+        except Exception as e:
+            return ErrorResponse(message=str(e))
+        
+        return LogoutResponse(
             result=True,
         )

@@ -7,12 +7,15 @@ from .schemas import (
     LoginResponse,
     ChangePasswordRequest,
     ChangePasswordResponse,
+    LogoutRequest,
+    LogoutResponse,
     ErrorResponse
 )
 from dependencies.usecase import(
     LoginInterface,
     SetPasswordInterface,
     ChangePasswordInterface,
+    LogoutInterface,
 )
 from routes import LoggingRoute
 
@@ -106,3 +109,20 @@ async def post_change_password(
     return ChangePasswordResponse.model_validate(
         response
     )
+
+@router.post(
+    "/logout",
+    response_model=LogoutResponse|ErrorResponse,
+    status_code=status.HTTP_200_OK
+)
+async def post_logout(
+    data: LogoutRequest,
+    use_case: LogoutInterface,
+) -> LogoutResponse|ErrorResponse:
+    #TODO access_tokenからUserを特定したい
+    response = await use_case.execute()
+    
+    if hasattr(response, 'message'):
+        return ErrorResponse.model_validate(response)
+    
+    return LogoutResponse.model_validate(response)

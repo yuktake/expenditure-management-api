@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 from api.auth.schemas import (
     AdminInitiateAuthResponse,
     LoginResponse,
-    ChangePasswordResponse
+    ChangePasswordResponse,
+    LogoutResponse,
 )
 
 class AbstractLogin(ABC):
@@ -36,4 +37,10 @@ class AbstractChangePassword(ABC):
         proposed_password: str,
         access_token: str,
     ) -> ChangePasswordResponse:
+        raise NotImplementedError()
+    
+class AbstractLogout(ABC):
+
+    @abstractmethod
+    async def execute(self) -> LogoutResponse:
         raise NotImplementedError()
