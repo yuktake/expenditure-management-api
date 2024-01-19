@@ -51,17 +51,14 @@ from usecases.wallet.history.history_usecase import (
 from usecases.auth.abstract_auth_usecase import (
     AbstractLogin,
     AbstractSetPassword,
-    AbstractVerifySmsCode,
 )
 from usecases.auth.test_auth_usecase import (
     Login as TestLogin,
     SetPassword as TestSetPassword,
-    VerifySmsCode as TestVerifySmsCode,
 )
 from usecases.auth.auth_usecase import (
     Login,
     SetPassword,
-    VerifySmsCode,
 )
 
 from usecases.admin.user.abstract_user_usecase import (
@@ -120,9 +117,6 @@ if settings.status == "testing":
     SetPasswordInterface = Annotated[
         AbstractSetPassword, Depends(TestSetPassword)
     ]
-    VerifySmsCodeInterface = Annotated[
-        AbstractVerifySmsCode, Depends(TestVerifySmsCode)
-    ]
 
     CreateUserInterface = Annotated[
         AbstractCreateUser, Depends(TestCreateUser)
@@ -168,9 +162,6 @@ else:
     ]
     SetPasswordInterface = Annotated[
         AbstractSetPassword, Depends(SetPassword)
-    ]
-    VerifySmsCodeInterface = Annotated[
-        AbstractVerifySmsCode, Depends(VerifySmsCode)
     ]
 
     CreateUserInterface = Annotated[

@@ -3,13 +3,11 @@ import boto3
 from config import Settings
 from api.auth.schemas import (
     AdminInitiateAuthResponse,
-    SetPasswordResponse,
     LoginResponse
 )
 from .abstract_auth_usecase import(
     AbstractLogin,
     AbstractSetPassword,
-    AbstractVerifySmsCode
 )
 
 class Login(AbstractLogin):
@@ -48,7 +46,7 @@ class SetPassword(AbstractSetPassword):
         email: str,
         new_password: str,
         session: str,
-    ) -> SetPasswordResponse:
+    ) -> LoginResponse:
         settings = Settings()
 
         cognito = boto3.client(
@@ -66,35 +64,8 @@ class SetPassword(AbstractSetPassword):
             Session=session
         )
 
-        return SetPasswordResponse(
-            challege_type=response['ChallengeName'],
-            session=response['Session']
-        )
-
-class VerifySmsCode(AbstractVerifySmsCode):
-    async def execute(
-        self,
-        email: str,
-        code: str,
-        session: str,
-    ) -> LoginResponse:
-        settings = Settings()
-
-        cognito = boto3.client(
-            'cognito-idp',
-            aws_access_key_id=settings.aws_access_key_id,
-            aws_secret_access_key=settings.aws_secret_access_key,
-            region_name=settings.aws_region,
-        )
-
-        response = cognito.admin_respond_to_auth_challenge(
-            UserPoolId=settings.pool_id,
-            ClientId=settings.app_client_id,
-            ChallengeName='SMS_MFA',
-            ChallengeResponses={'USERNAME': email, 'SMS_MFA_CODE': code},
-            Session=session
-        )
-
         return LoginResponse(
-            token=response['AuthenticationResult']['AccessToken']
+            access_token=response['AuthenticationResult']['AccessToken'],
+            refresh_token=response['AuthenticationResult']['RefreshToken'],
+            expires_in=response['AuthenticationResult']['ExpiresIn'],
         )
