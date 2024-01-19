@@ -51,14 +51,17 @@ from usecases.wallet.history.history_usecase import (
 from usecases.auth.abstract_auth_usecase import (
     AbstractLogin,
     AbstractSetPassword,
+    AbstractChangePassword,
 )
 from usecases.auth.test_auth_usecase import (
     Login as TestLogin,
     SetPassword as TestSetPassword,
+    ChangePassword as TestChangePassword,
 )
 from usecases.auth.auth_usecase import (
     Login,
     SetPassword,
+    ChangePassword,
 )
 
 from usecases.admin.user.abstract_user_usecase import (
@@ -117,6 +120,9 @@ if settings.status == "testing":
     SetPasswordInterface = Annotated[
         AbstractSetPassword, Depends(TestSetPassword)
     ]
+    ChangePasswordInterface = Annotated[
+        AbstractChangePassword, Depends(TestChangePassword)
+    ]
 
     CreateUserInterface = Annotated[
         AbstractCreateUser, Depends(TestCreateUser)
@@ -162,6 +168,9 @@ else:
     ]
     SetPasswordInterface = Annotated[
         AbstractSetPassword, Depends(SetPassword)
+    ]
+    ChangePasswordInterface = Annotated[
+        AbstractChangePassword, Depends(ChangePassword)
     ]
 
     CreateUserInterface = Annotated[

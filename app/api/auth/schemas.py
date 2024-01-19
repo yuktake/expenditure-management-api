@@ -22,3 +22,14 @@ class LoginResponse(BaseModel):
     access_token: str
     refresh_token: str
     expires_in: int
+
+class ChangePasswordRequest(BaseModel):
+    previous_password: str
+    proposed_password: str
+    access_token: str
+
+class ChangePasswordResponse(BaseModel):
+    result: bool
+
+class ErrorResponse(BaseModel):
+    message: str
