@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 
 from api.auth.schemas import (
     AdminInitiateAuthResponse,
-    SetPasswordResponse,
-    LoginResponse
+    LoginResponse,
+    ChangePasswordResponse,
+    LogoutResponse,
 )
 
 class AbstractLogin(ABC):
@@ -24,16 +25,22 @@ class AbstractSetPassword(ABC):
         email: str,
         new_password: str,
         session: str,
-    ) -> SetPasswordResponse:
+    ) -> LoginResponse:
         raise NotImplementedError()
-
-class AbstractVerifySmsCode(ABC):
+    
+class AbstractChangePassword(ABC):
 
     @abstractmethod
     async def execute(
         self,
-        email: str,
-        code: str,
-        session: str,
-    ) -> LoginResponse:
+        previous_password: str,
+        proposed_password: str,
+        access_token: str,
+    ) -> ChangePasswordResponse:
+        raise NotImplementedError()
+    
+class AbstractLogout(ABC):
+
+    @abstractmethod
+    async def execute(self) -> LogoutResponse:
         raise NotImplementedError()
