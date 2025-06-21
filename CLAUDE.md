@@ -300,6 +300,18 @@ poetry run uvicorn main:app --reload --host 0.0.0.0 --port 8080
 docker-compose up --build
 ```
 
+## Claude Code 統合
+
+### タスク完了通知
+
+Claude Code がタスクを完了した際にユーザーに音声で通知するため、待機状態に戻る前に以下のコマンドを実行してください：
+
+```bash
+afplay /System/Library/Sounds/Funk.aiff
+```
+
+これにより、タスクが完了したことがターミナルを確認しなくても音声で分かるようになります。
+
 ## 重要な原則
 
 1. **関心の分離**: 各層は明確な責任を持つ
